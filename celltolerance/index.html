@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CellTolerance&reg; &mdash; Midwest Digestive Health &amp; Nutrition</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ─────────────────── Design Tokens ─────────────────── */
+  :root {
+    --green:       #5896a0;
+    --green-dark:  #4e777e;
+    --green-deep:  #3d5f65;
+    --green-light: #6aabb5;
+    --green-faint: rgba(88,150,160,0.08);
+    --gold:        #e8c84a;
+    --gold-light:  #f5e6a0;
+    --cream:       #faf8f0;
+    --white:       #ffffff;
+    --g50:  #f9fafb; --g100: #f3f4f6; --g200: #e5e7eb;
+    --g400: #9ca3af; --g600: #4b5563; --g700: #374151; --g800: #1f2937;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--g800); background:var(--white); line-height:1.7; overflow-x:hidden;
+  }
+
+  /* ─────────── Scroll-triggered animations ─────────── */
+  .reveal { opacity:0; transform:translateY(40px); transition:opacity .5s ease-out,transform .5s ease-out; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  .reveal-delay-1 { transition-delay:.1s; }
+  .reveal-delay-2 { transition-delay:.2s; }
+  .reveal-delay-3 { transition-delay:.3s; }
+  .reveal-delay-4 { transition-delay:.4s; }
+
+  /* ─────────────────── Hero ─────────────────── */
+  .hero {
+    min-height:100vh; display:flex; align-items:center;
+    padding:4rem 2rem; position:relative; overflow:hidden;
+    background: linear-gradient(160deg, var(--green-deep) 0%, var(--green-dark) 40%, var(--green) 100%);
+  }
+  /* Background image layer — swap the placeholder URL for a real photo */
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    /* ── REPLACE THIS URL WITH YOUR OWN IMAGE ── */
+    background: url('hero-bg.jpg') center/cover no-repeat;
+    opacity: 0.18;
+    z-index: 0;
+  }
+  .hero::after {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 70% 20%, rgba(232,200,74,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(88,150,160,0.12) 0%, transparent 50%);
+    z-index: 0;
+  }
+  .hero-inner {
+    max-width:1200px; margin:0 auto; width:100%; position:relative; z-index:1;
+    display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;
+  }
+  .hero-content { color:var(--white); }
+  .hero-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15);
+    border-radius:100px; padding:.4rem 1rem;
+    font-size:.82rem; font-weight:500; color:var(--gold-light);
+    margin-bottom:1.5rem; backdrop-filter:blur(8px);
+  }
+  .badge-dot { width:8px;height:8px;border-radius:50%;background:var(--gold);animation:pulse-dot 2s infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .hero h1 { font-size:clamp(2.4rem,5vw,3.6rem); font-weight:800; line-height:1.15; margin-bottom:.75rem; }
+  .hero h1 .accent { color:var(--gold); }
+  .hero-sub { font-size:1.15rem; color:rgba(255,255,255,0.78); max-width:480px; margin-bottom:2rem; font-weight:300; }
+  .hero-buttons { display:flex; gap:1rem; flex-wrap:wrap; }
+  .btn-primary {
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--gold); color:var(--green-deep);
+    padding:.85rem 1.75rem; border-radius:10px;
+    text-decoration:none; font-weight:700; font-size:.95rem;
+    transition:transform .2s,box-shadow .2s;
+  }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(232,200,74,0.3); }
+  .btn-outline {
+    display:inline-flex; align-items:center; gap:8px;
+    border:1.5px solid rgba(255,255,255,0.3); color:var(--white);
+    padding:.85rem 1.75rem; border-radius:10px;
+    text-decoration:none; font-weight:500; font-size:.95rem;
+    transition:border-color .2s,background .2s;
+  }
+  .btn-outline:hover { border-color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.05); }
+
+  /* Hero stat card */
+  .hero-visual { display:flex; justify-content:center; align-items:center; }
+  .hero-card {
+    background:rgba(255,255,255,0.07); backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.12); border-radius:24px; padding:2.5rem;
+    max-width:420px; width:100%;
+  }
+  .hero-card-label { font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--gold-light); font-weight:600; margin-bottom:1.25rem; }
+  .stat-row { display:flex; flex-direction:column; gap:1.25rem; }
+  .stat-item {
+    display:flex; align-items:center; gap:1rem; padding:1rem; border-radius:14px;
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);
+  }
+  .stat-icon {
+    width:44px; height:44px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;
+  }
+  .stat-icon.green { background:rgba(88,150,160,0.45); color:#b8f0fa; }
+  .stat-icon.gold  { background:rgba(232,200,74,0.35); color:#ffe566; }
+  .stat-icon.blue  { background:rgba(59,130,246,0.35); color:#93c5fd; }
+  .stat-text { color:rgba(255,255,255,0.9); }
+  .stat-text strong { display:block; font-size:1.4rem; color:var(--white); font-weight:700; }
+  .stat-text span { font-size:.82rem; color:rgba(255,255,255,0.6); }
+
+  /* Hero image placeholder note */
+  .hero-img-note {
+    position:absolute; bottom:1.5rem; right:2rem; z-index:2;
+    background:rgba(0,0,0,0.45); color:rgba(255,255,255,0.7);
+    font-size:.72rem; padding:.35rem .75rem; border-radius:6px;
+    backdrop-filter:blur(8px);
+  }
+
+  /* ─────────────────── Sections ─────────────────── */
+  section { padding:5rem 2rem; }
+  .section-inner { max-width:1000px; margin:0 auto; }
+  .section-label { font-size:.78rem; text-transform:uppercase; letter-spacing:.1em; color:var(--green); font-weight:700; margin-bottom:.5rem; }
+  .section-title { font-size:clamp(1.8rem,3vw,2.4rem); font-weight:800; line-height:1.2; margin-bottom:1rem; color:var(--green-deep); }
+  .section-desc { font-size:1.05rem; color:var(--g600); max-width:640px; line-height:1.8; }
+
+  /* ─────── Lifestyle Photo Interstitials ─────── */
+  .photo-break {
+    position:relative; height:420px; overflow:hidden;
+  }
+  .photo-break-img {
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; filter:brightness(0.65);
+  }
+  /* Placeholder when no image is loaded */
+  .photo-break-placeholder {
+    position:absolute; inset:0;
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:.5rem;
+  }
+  .photo-break-placeholder span {
+    color:rgba(255,255,255,0.5); font-size:.85rem; font-weight:500;
+  }
+  .photo-break-placeholder .ph-icon {
+    font-size:2.5rem; color:rgba(255,255,255,0.25);
+  }
+  .photo-break-overlay {
+    position:absolute; inset:0; z-index:1;
+    display:flex; align-items:center;
+    padding:0 6%;
+  }
+  .photo-break-overlay.align-left  { justify-content:flex-start; }
+  .photo-break-overlay.align-right { justify-content:flex-end; }
+  .photo-break-overlay.align-center { justify-content:center; text-align:center; }
+  .photo-break-text {
+    max-width:440px; color:var(--white);
+  }
+  .photo-break-text h3 {
+    font-size:clamp(1.4rem,2.5vw,1.8rem); font-weight:800; line-height:1.25; margin-bottom:.5rem;
+  }
+  .photo-break-text p { font-size:.95rem; color:rgba(255,255,255,0.8); line-height:1.6; }
+
+  /* ─────── Exclusive Banner ─────── */
+  .exclusive {
+    background:linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 100%);
+    color:var(--white); text-align:center; padding:3.5rem 2rem;
+  }
+  .exclusive-inner { max-width:800px; margin:0 auto; }
+  .exclusive-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(232,200,74,0.15); border:1px solid rgba(232,200,74,0.3);
+    border-radius:100px; padding:.4rem 1.25rem;
+    font-size:.82rem; font-weight:600; color:var(--gold); margin-bottom:1.25rem;
+  }
+  .exclusive h2 { font-size:clamp(1.5rem,3vw,2rem); font-weight:800; margin-bottom:.75rem; }
+  .exclusive p { font-size:1.05rem; color:rgba(255,255,255,0.75); max-width:600px; margin:0 auto; line-height:1.8; }
+
+  /* ─────── Science Cards ─────── */
+  .science { background:var(--g50); }
+  .science-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; margin-top:2.5rem; }
+  .science-card {
+    background:var(--white); border-radius:16px; padding:2rem;
+    border:1px solid var(--g200); transition:box-shadow .3s,transform .3s;
+  }
+  .science-card:hover { box-shadow:0 8px 32px rgba(0,0,0,0.06); transform:translateY(-2px); }
+  .science-card-icon {
+    width:56px; height:56px; border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:1rem; overflow:hidden; position:relative;
+    background:var(--green-faint);
+  }
+  .science-card-icon img {
+    width:100%; height:100%; object-fit:cover; border-radius:14px;
+  }
+  .science-card-icon .icon-fallback { font-size:1.4rem; }
+  .science-card h3 { font-size:1.05rem; font-weight:700; margin-bottom:.5rem; color:var(--green-deep); }
+  .science-card p { font-size:.92rem; color:var(--g600); line-height:1.7; }
+
+  /* ─────── Steps ─────── */
+  .steps-list { margin-top:3rem; display:flex; flex-direction:column; }
+  .step { display:grid; grid-template-columns:60px 1fr; gap:1.5rem; padding-bottom:2.5rem; position:relative; }
+  .step:last-child { padding-bottom:0; }
+  .step-marker { display:flex; flex-direction:column; align-items:center; }
+  .step-number {
+    width:48px; height:48px; border-radius:50%;
+    background:linear-gradient(135deg, var(--green), var(--green-light));
+    color:var(--white); font-weight:800; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; z-index:1;
+  }
+  .step-line { width:2px; flex:1; background:var(--g200); margin-top:.5rem; }
+  .step:last-child .step-line { display:none; }
+  .step-content { padding-top:.5rem; }
+  .step-content h3 { font-size:1.1rem; font-weight:700; color:var(--green-deep); margin-bottom:.35rem; }
+  .step-content p { font-size:.95rem; color:var(--g600); line-height:1.7; }
+
+  /* ─────── Benefits ─────── */
+  .benefits { background:var(--g50); }
+  .benefits-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2.5rem; }
+  .benefit-card {
+    background:var(--white); border-radius:16px; padding:1.75rem;
+    border:1px solid var(--g200); transition:box-shadow .3s,transform .3s;
+  }
+  .benefit-card:hover { box-shadow:0 8px 32px rgba(0,0,0,0.06); transform:translateY(-2px); }
+  .benefit-icon {
+    width:44px; height:44px; border-radius:12px; background:var(--green-faint);
+    display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:1rem;
+    color:var(--green);
+  }
+  .benefit-card h3 { font-size:1rem; font-weight:700; color:var(--green-deep); margin-bottom:.35rem; }
+  .benefit-card p { font-size:.88rem; color:var(--g600); line-height:1.7; }
+
+  /* ─────── Right For You ─────── */
+  .right-for-you-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-top:2.5rem; align-items:start; }
+  .symptom-list { list-style:none; display:flex; flex-direction:column; gap:.75rem; }
+  .symptom-list li { display:flex; align-items:flex-start; gap:.75rem; font-size:.95rem; color:var(--g700); line-height:1.6; }
+  .symptom-check {
+    width:24px; height:24px; border-radius:50%; background:var(--green-faint);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; margin-top:2px; color:var(--green); font-size:.75rem; font-weight:700;
+  }
+  .callout-box {
+    background:linear-gradient(135deg, rgba(88,150,160,0.06), rgba(232,200,74,0.04));
+    border:1px solid rgba(88,150,160,0.18); border-radius:16px; padding:2rem;
+  }
+  .callout-box h3 { font-size:1.1rem; font-weight:700; color:var(--green-deep); margin-bottom:.75rem; }
+  .callout-box p { font-size:.92rem; color:var(--g600); line-height:1.8; }
+
+  /* ─────── Pricing ─────── */
+  .pricing { background:var(--g50); }
+  .pricing-cards { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:2.5rem; }
+  .pricing-card { background:var(--white); border-radius:16px; padding:2rem; border:1px solid var(--g200); }
+  .pricing-card.highlight { border-color:var(--green); box-shadow:0 0 0 1px var(--green); }
+  .pricing-card h3 { font-size:1.05rem; font-weight:700; color:var(--green-deep); margin-bottom:.5rem; }
+  .pricing-card .price { font-size:2rem; font-weight:800; color:var(--green); margin-bottom:.25rem; }
+  .pricing-card .price-note { font-size:.82rem; color:var(--g400); margin-bottom:1rem; }
+  .pricing-card p { font-size:.92rem; color:var(--g600); line-height:1.7; }
+
+  /* ─────── Team ─────── */
+  .team-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2.5rem; max-width:720px; margin-left:auto; margin-right:auto; }
+  .team-row-2 { display:flex; justify-content:center; gap:8rem; margin-top:1.5rem; max-width:720px; margin-left:auto; margin-right:auto; }
+  .team-card { text-align:center; }
+  .team-avatar {
+    width:88px; height:88px; border-radius:50%; margin:0 auto .75rem;
+    background:linear-gradient(135deg, var(--g200), var(--g100));
+    display:flex; align-items:center; justify-content:center; font-size:1.8rem; color:var(--green);
+    overflow:hidden; position:relative;
+  }
+  .team-avatar img {
+    width:100%; height:100%; object-fit:cover; border-radius:50%;
+  }
+  .team-avatar .avatar-fallback { font-size:1.8rem; }
+  .team-card h3 { font-size:.95rem; font-weight:700; color:var(--green-deep); margin-bottom:.15rem; }
+  .team-card p { font-size:.82rem; color:var(--g400); }
+
+  /* ─────── CTA ─────── */
+  .cta {
+    background:linear-gradient(160deg, var(--green-deep) 0%, var(--green) 100%);
+    color:var(--white); text-align:center; padding:5rem 2rem;
+  }
+  .cta h2 { font-size:clamp(1.8rem,3vw,2.4rem); font-weight:800; margin-bottom:.75rem; }
+  .cta p { font-size:1.05rem; color:rgba(255,255,255,0.75); margin-bottom:2rem; max-width:520px; margin-left:auto; margin-right:auto; }
+  .cta .btn-primary { font-size:1.05rem; padding:1rem 2rem; }
+
+  /* ─────── Footer ─────── */
+  footer {
+    background:var(--g800); color:rgba(255,255,255,0.5);
+    padding:2.5rem 2rem; text-align:center; font-size:.8rem; line-height:1.8;
+  }
+  footer a { color:rgba(255,255,255,0.7); text-decoration:none; }
+  footer a:hover { color:var(--white); }
+  .footer-disclaimer { max-width:800px; margin:0 auto; }
+
+  /* ─────── Responsive ─────── */
+  @media(max-width:768px){
+    .hero-inner { grid-template-columns:1fr; gap:2rem; }
+    .hero-card { max-width:100%; }
+    .science-grid,.right-for-you-grid,.pricing-cards { grid-template-columns:1fr; }
+    .benefits-grid { grid-template-columns:1fr; }
+    .team-grid { grid-template-columns:1fr; }
+    .team-row-2 { flex-direction:column; align-items:center; gap:1.5rem; }
+    .photo-break { height:300px; }
+    .photo-break-text h3 { font-size:1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section class="hero">
+  <!-- NOTE: Place a JPG named "hero-bg.jpg" in the same folder to replace the gradient background.
+       Ideal image: people enjoying a meal together, ~1920x1080, warm tones. -->
+  <!-- ><span class="hero-img-note">Replace hero-bg.jpg with your own image</span> -->
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge reveal">
+        <span class="badge-dot"></span>
+        Now Available &mdash; One of Only Two Centers in the U.S.
+      </div>
+      <h1 class="reveal reveal-delay-1">Finding pleasure <span class="accent">in food.</span> Again.</h1>
+      <p class="hero-sub reveal reveal-delay-2">The CellTolerance&reg; Program at MDHN uses advanced cellular imaging to identify the exact foods triggering your digestive symptoms&nbsp;&mdash; so you can eat better and feel better.</p>
+      <div class="hero-buttons reveal reveal-delay-3">
+        <a class="btn-primary" href="https://www.mdhngi.com" target="_blank">Get Started &rarr;</a>
+        <a class="btn-outline" href="#science">Learn How It Works</a>
+      </div>
+    </div>
+    <div class="hero-visual reveal reveal-delay-2">
+      <div class="hero-card">
+        <div class="hero-card-label">Clinical Outcomes</div>
+        <div class="stat-row">
+          <div class="stat-item">
+            <div class="stat-icon green">&#10003;</div>
+            <div class="stat-text"><strong>96%</strong><span>of patients felt better after 6 months on their guided diet</span></div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon gold">&#9878;</div>
+            <div class="stat-text"><strong>Personalized</strong><span>Comprehensive program with a dedicated care team</span></div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon blue">&#9733;</div>
+            <div class="stat-text"><strong>Exclusive</strong><span>One of only 2 centers in the U.S. performing this test</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ EXCLUSIVE BANNER ════════════════ -->
+<section class="exclusive">
+  <div class="exclusive-inner reveal">
+    <div class="exclusive-badge">&#9733;&nbsp; Rare Availability</div>
+    <h2>The Only Center in the Midwest</h2>
+    <p>Midwest Digestive Health &amp; Nutrition is one of only two centers in the entire United States currently performing the CellTolerance&reg; test&nbsp;&mdash; and the only one in the Midwest. Our patients receive access to a diagnostic capability found almost nowhere else in the country.</p>
+  </div>
+</section>
+
+<!-- ═══════ PHOTO BREAK 1 — slides in from the left ═══════ -->
+<div class="photo-break reveal">
+  <!-- To use a real photo: remove .photo-break-placeholder, add:
+       <img class="photo-break-img" src="photo-family-dinner.jpg" alt="Family enjoying dinner"> -->
+  <div class="photo-break-placeholder">
+    <span class="ph-icon">&#128247;</span>
+    <span><img class="photo-break-img" src="photo-family-dinner.jpg" alt="Family enjoying dinner"></span>
+  </div>
+  <div class="photo-break-overlay align-left">
+    <div class="photo-break-text">
+      <h3>Food Should Bring Joy,<br>Not Discomfort</h3>
+      <p>Our program helps you rediscover the pleasure of eating without fear of triggering symptoms.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SCIENCE ════════════════ -->
+<section class="science" id="science">
+  <div class="section-inner">
+    <div class="section-label reveal">The Science</div>
+    <h2 class="section-title reveal">How Food Intolerances Damage Your Gut</h2>
+    <p class="section-desc reveal">Atypical food allergies often go undetected by standard testing. Unlike classic allergies, these reactions cause localized damage to the tissue lining your gut&nbsp;&mdash; inflammation invisible to the naked eye, but visible with the right technology.</p>
+
+    <div class="science-grid">
+      <div class="science-card reveal">
+        <div class="science-card-icon">
+          <!-- Replace: drop an image into this element, or keep the fallback icon -->
+          <!-- <img src="icon-microscope.jpg" alt="Cellular imaging"> -->
+          <span class="icon-fallback">&#128300;</span>
+        </div>
+        <h3>Cellular-Level Imaging</h3>
+        <p>During a standard upper endoscopy, a specialized probe called Cellvizio&reg; is used to visualize your gut tissue in real time at the cellular level&nbsp;&mdash; something conventional endoscopy cannot do.</p>
+      </div>
+      <div class="science-card reveal reveal-delay-1">
+        <div class="science-card-icon">
+          <!-- <img src="icon-food-challenge.jpg" alt="Food challenge"> -->
+          <span class="icon-fallback">&#127859;</span>
+        </div>
+        <h3>Real-Time Food Challenges</h3>
+        <p>Small amounts of suspected foods are applied directly to your intestinal lining. The probe then observes whether each food triggers a visible reaction&nbsp;&mdash; such as cellular swelling, gap formation, or tissue disruption.</p>
+      </div>
+      <div class="science-card reveal reveal-delay-2">
+        <div class="science-card-icon">
+          <!-- <img src="icon-hidden-damage.jpg" alt="Hidden damage"> -->
+          <span class="icon-fallback">&#129504;</span>
+        </div>
+        <h3>Detecting Hidden Damage</h3>
+        <p>Atypical food allergies cause localized damage to gut tissue that standard blood tests and skin prick tests cannot detect. CellTolerance&reg; captures this damage as it happens, directly at the source.</p>
+      </div>
+      <div class="science-card reveal reveal-delay-3">
+        <div class="science-card-icon">
+          <!-- <img src="icon-results.jpg" alt="Clinical results"> -->
+          <span class="icon-fallback">&#9989;</span>
+        </div>
+        <h3>Clinically Meaningful Results</h3>
+        <p>Patients who test positive for specific food intolerances are very likely to experience significant clinical improvement in their symptoms when they remove the identified trigger foods from their diet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PHOTO BREAK 2 — slides in from the right ═══════ -->
+<div class="photo-break reveal">
+  <!-- <img class="photo-break-img" src="photo-friends-cooking.jpg" alt="Friends cooking together"> -->
+  <div class="photo-break-placeholder">
+    <span class="ph-icon">&#128247;</span>
+    <span><img class="photo-break-img" src="photo-friends-cooking.jpg" alt="Friends cooking together"></span>
+  </div>
+  <div class="photo-break-overlay align-right">
+    <div class="photo-break-text">
+      <h3>Precision Answers.<br>Personalized Care.</h3>
+      <p>No more guesswork. No more overly restrictive diets. Just clarity.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ HOW IT WORKS ════════════════ -->
+<section id="how-it-works">
+  <div class="section-inner">
+    <div class="section-label reveal">The Program</div>
+    <h2 class="section-title reveal">How the CellTolerance&reg; Program Works</h2>
+    <p class="section-desc reveal">A comprehensive program that goes far beyond a single test&nbsp;&mdash; from precise diagnosis through personalized dietary support and long-term symptom relief.</p>
+
+    <div class="steps-list">
+      <div class="step reveal">
+        <div class="step-marker"><div class="step-number">1</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <h3>Initial Consultation</h3>
+          <p>Meet with our gastroenterology team to review your history, symptoms, and goals. We determine whether CellTolerance&reg; testing is appropriate for your situation.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-marker"><div class="step-number">2</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <h3>Upper Endoscopy with Cellvizio&reg; Imaging</h3>
+          <p>During a routine upper endoscopy under sedation, the advanced confocal laser probe is introduced to examine your intestinal tissue at the cellular level while specific foods are tested in real time.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-marker"><div class="step-number">3</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <h3>Personalized Diet Plan</h3>
+          <p>Based on your results, our registered dietitians create a tailored elimination plan&nbsp;&mdash; removing only the foods that triggered a reaction, so your diet stays as broad and enjoyable as possible.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-marker"><div class="step-number">4</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <h3>Ongoing Support &amp; Follow-Up</h3>
+          <p>You will receive follow-up from our physicians and advanced practice providers, who will monitor your progress and adjust your plan as your symptoms improve.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PHOTO BREAK 3 — centered ═══════ -->
+<div class="photo-break reveal">
+  <!-- <img class="photo-break-img" src="photo-couple-market.jpg" alt="Couple at farmers market"> -->
+  <div class="photo-break-placeholder">
+    <span class="ph-icon">&#128247;</span>
+    <span><img class="photo-break-img" src="photo-couple-market.jpg" alt="Couple at farmers market"></span>
+  </div>
+  <div class="photo-break-overlay align-center">
+    <div class="photo-break-text">
+      <h3>Eat With Confidence Again</h3>
+      <p>Know exactly which foods work for your body&nbsp;&mdash; and enjoy everything else without worry.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ BENEFITS ════════════════ -->
+<section class="benefits">
+  <div class="section-inner">
+    <div class="section-label reveal">Benefits</div>
+    <h2 class="section-title reveal">Why CellTolerance&reg; Is Different</h2>
+
+    <div class="benefits-grid">
+      <div class="benefit-card reveal">
+        <div class="benefit-icon">&#127919;</div>
+        <h3>Accurate Identification</h3>
+        <p>Directly observes your body's reaction to specific foods at the source&nbsp;&mdash; no guesswork, no broad elimination diets.</p>
+      </div>
+      <div class="benefit-card reveal reveal-delay-1">
+        <div class="benefit-icon">&#128201;</div>
+        <h3>Proven Results</h3>
+        <p>Clinical studies show 96% of patients with a positive test felt better after following their guided diet for 6 months.</p>
+      </div>
+      <div class="benefit-card reveal reveal-delay-2">
+        <div class="benefit-icon">&#129330;</div>
+        <h3>Comprehensive Support</h3>
+        <p>A dedicated healthcare team guides you every step of the way&nbsp;&mdash; from diagnosis through long-term dietary management.</p>
+      </div>
+      <div class="benefit-card reveal reveal-delay-3">
+        <div class="benefit-icon">&#127869;</div>
+        <h3>Personalized, Not Restrictive</h3>
+        <p>Pinpoints only the specific foods causing damage, preventing overly restrictive diets and helping you keep the foods you love.</p>
+      </div>
+      <div class="benefit-card reveal reveal-delay-1">
+        <div class="benefit-icon">&#128172;</div>
+        <h3>Improved Well-Being</h3>
+        <p>Gain clarity on what to eat, reduce symptoms, feel more confident, and potentially improve your overall quality of life.</p>
+      </div>
+      <div class="benefit-card reveal reveal-delay-2">
+        <div class="benefit-icon">&#9878;</div>
+        <h3>Answers Where Others Fell Short</h3>
+        <p>Ideal for patients who haven't found relief from standard allergy testing, elimination diets, or conventional GI workups.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ RIGHT FOR YOU ════════════════ -->
+<section id="right-for-you">
+  <div class="section-inner">
+    <div class="section-label reveal">Is It Right for You?</div>
+    <h2 class="section-title reveal">This Program May Be Helpful If You&hellip;</h2>
+
+    <div class="right-for-you-grid">
+      <ul class="symptom-list reveal">
+        <li><span class="symptom-check">&#10003;</span>Have been diagnosed with Irritable Bowel Syndrome (IBS) and still don't have adequate symptom relief</li>
+        <li><span class="symptom-check">&#10003;</span>Suspect certain foods trigger your digestive symptoms but can't pinpoint which ones</li>
+        <li><span class="symptom-check">&#10003;</span>Have not found clear answers from other diets, tests, or treatments&nbsp;&mdash; even after ruling out celiac disease, allergies, and inflammatory bowel disease</li>
+        <li><span class="symptom-check">&#10003;</span>Experience bloating, abdominal pain, diarrhea, or nausea that seems connected to what you eat</li>
+        <li><span class="symptom-check">&#10003;</span>Feel frustrated by overly restrictive elimination diets that haven't provided lasting relief</li>
+      </ul>
+      <div class="callout-box reveal reveal-delay-1">
+        <h3>Why a Positive Test Matters</h3>
+        <p>Unlike conventional food sensitivity panels, CellTolerance&reg; directly visualizes the damage that specific foods cause to your gut lining. This means a positive result isn't just a number on a lab report&nbsp;&mdash; it's objective evidence of tissue-level harm. Patients who receive a positive identification and subsequently avoid the indicated foods are very likely to experience meaningful, lasting improvement in their symptoms. The precision of this approach ensures you only eliminate what truly needs to go, making dietary changes manageable and sustainable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ PRICING ════════════════ -->
+<section class="pricing" id="pricing">
+  <div class="section-inner">
+    <div class="section-label reveal">Pricing &amp; Insurance</div>
+    <h2 class="section-title reveal">Accessible, Transparent Pricing</h2>
+    <p class="section-desc reveal">We're committed to offering this breakthrough diagnostic tool at accessible pricing so more patients can find the answers they need.</p>
+
+    <div class="pricing-cards">
+      <div class="pricing-card reveal">
+        <h3>Upper Endoscopy &amp; Anesthesia</h3>
+        <div class="price">Billed to Insurance</div>
+        <div class="price-note">Standard copay, deductible, or co-insurance applies</div>
+        <p>The endoscopy portion of the procedure is billed to your health insurance just like any standard upper endoscopy. You'll be responsible for your usual cost-sharing based on your plan.</p>
+      </div>
+      <div class="pricing-card highlight reveal reveal-delay-1">
+        <h3>CellTolerance&reg; Food Allergy Testing</h3>
+        <div class="price">$599</div>
+        <div class="price-note">One-time out-of-pocket fee</div>
+        <p>This covers the advanced confocal imaging component of the procedure. This is not currently covered by insurance. Our team is happy to verify your insurance benefits and walk you through expected costs before your procedure.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ TEAM ════════════════ -->
+<section>
+  <div class="section-inner">
+    <div class="section-label reveal">Our Team</div>
+    <h2 class="section-title reveal">Expert Care at Every Step</h2>
+    <p class="section-desc reveal">Our multidisciplinary team combines gastroenterology expertise with nutritional science to guide you through every stage of the program.</p>
+
+    <!-- Row 1: MDs -->
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-avatar">
+          <img src="venu.jpg" alt="Mukund Venu, MD">
+          <!-- ><span class="avatar-fallback">&#9877;</span> -->
+        </div>
+        <h3>Mukund Venu, MD</h3>
+        <p>FACG, DABOM</p>
+      </div>
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-avatar">
+          <img src="hendler.jpg" alt="Steven Hendler, MD">
+          <!-- ><span class="avatar-fallback">&#9877;</span> -->
+        </div>
+        <h3>Steven Hendler, MD</h3>
+        <p>Gastroenterology</p>
+      </div>
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-avatar">
+          <img src="verma.jpg" alt="Aashesh Verma, MD">
+          <!-- ><span class="avatar-fallback">&#9877;</span> -->
+        </div>
+        <h3>Aashesh Verma, MD</h3>
+        <p>Gastroenterology</p>
+      </div>
+    </div>
+    <!-- Row 2: APPs -->
+    <div class="team-row-2">
+      <div class="team-card reveal reveal-delay-3">
+        <div class="team-avatar">
+          <img src="meyer.jpg" alt="Sharon Meyer, APN">
+          <!-- <span class="avatar-fallback">&#9877;</span> -->
+        </div>
+        <h3>Sharon Meyer</h3>
+        <p>APN</p>
+      </div>
+      <div class="team-card reveal reveal-delay-4">
+        <div class="team-avatar">
+          <img src="vanwieren.jpg" alt="Alizabeth Van Wieren, PA-C">
+          <!-- <span class="avatar-fallback">&#9877;</span> -->
+        </div>
+        <h3>Alizabeth Van Wieren</h3>
+        <p>PA-C, RD</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ CTA ════════════════ -->
+<section class="cta">
+  <div class="reveal">
+    <h2>Ready to Find Relief?</h2>
+    <p>Understanding your body's unique reaction to food is the first step towards feeling better. Take control of your gut health today.</p>
+    <a class="btn-primary" href="https://www.mdhngi.com" target="_blank">Schedule a Consultation &rarr;</a>
+  </div>
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+  <div class="footer-disclaimer">
+    <p>&copy; 2026 Midwest Digestive Health &amp; Nutrition&nbsp;|&nbsp;<a href="https://www.mdhngi.com" target="_blank">www.mdhngi.com</a></p>
+    <p style="margin-top:.75rem;">The statements and references related to the CellTolerance&reg; Program are not intended to represent claims of safety or effectiveness for detecting or treating any specific condition or disease state. This information is provided as a reference to selected published literature and physician experiences. Any diagnostic or clinical assessment should always be made by a qualified attending physician. The CellTolerance&reg; Program has not been reviewed, cleared, or approved by the U.S. FDA. CellTolerance&reg; is a trademark of Mauna Kea Technologies. References related to the CellTolerance&reg; Program can be found on <a href="https://www.cell-tolerance.com" target="_blank">www.cell-tolerance.com</a>.</p>
+  </div>
+</footer>
+
+<!-- ════════════════ SCROLL REVEAL ════════════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+});
+</script>
+
+</body>
+</html>
